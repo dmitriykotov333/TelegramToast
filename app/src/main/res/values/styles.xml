@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="ThemeOverlay.AppCompat.Dialog.Alert.TestDialogTheme">
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <style name="Base.CardView.CardCustom">
+        <item name="android:layout_marginBottom">@dimen/_7sdp</item>
+        <item name="android:color">#C901060C</item>
+        <item name="android:radius">@dimen/_4sdp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+</resources>
