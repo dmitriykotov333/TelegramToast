@@ -4,5 +4,5 @@ A simple example of the implementation of the toast as in the telegram applicati
 ![preview2](https://github.com/dmitriykotov333/TelegramToast/blob/master/teltoast.gif)
 # GPU excess debugging
 ![preview2](https://github.com/dmitriykotov333/TelegramToast/blob/master/a.jpg)
-# GPU excess debugging
+# GPU Processing Profile
 ![preview2](https://github.com/dmitriykotov333/TelegramToast/blob/master/b.jpg)
