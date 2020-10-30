@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -14,9 +13,10 @@ import android.widget.TextView;
 
 import java.util.Objects;
 
-/**
- * Inner class
- */
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+
 class Toaster {
     /**
      * @param message used to display text information in toast
@@ -31,13 +31,15 @@ class Toaster {
     private int timeProgress;
     private int close;
     private RecyclerViewAdapter adapter;
+
     /**
      * Constructor
-     * @param context
-     * @param message
-     * @param buttonText
-     * @param timeProgress
-     * @param position
+     *
+     * @param context      class
+     * @param message      text
+     * @param buttonText   button
+     * @param timeProgress int
+     * @param position     int
      */
     public Toaster(RecyclerViewAdapter adapter, Context context, String message, String buttonText, int timeProgress, int position) {
         this.adapter = adapter;
@@ -48,30 +50,29 @@ class Toaster {
         this.position = position;
     }
 
-    private ProgressBar progressBar;
-    private TextView textProgress;
-    private TextView button;
-    private TextView textTitle;
-    private Handler handler;
+    @BindView(R.id.progress_circular)
+    ProgressBar progressBar;
+    @BindView(R.id.text_progress)
+    TextView textProgress;
+    @BindView(R.id.text_cancel)
+    TextView button;
+    @BindView(R.id.text_title)
+    TextView textTitle;
+    Handler handler;
 
     /**
      * Initialize view for dialog
-     * @param dialog
+     *
+     * @param dialog init
      */
-    private void initView(final Dialog dialog) {
-        progressBar = dialog.findViewById(R.id.progress_circular);
-        textProgress = dialog.findViewById(R.id.text_progress);
-        button = dialog.findViewById(R.id.text_cancel);
+    private void init(final Dialog dialog) {
+        ButterKnife.bind(this, dialog);
         button.setText(buttonText);
-        textTitle = dialog.findViewById(R.id.text_title);
         textTitle.setText(message);
         handler = new Handler();
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                close = -1;
-                dialog.dismiss();
-            }
+        button.setOnClickListener(v -> {
+            close = -1;
+            dialog.dismiss();
         });
     }
 
@@ -81,55 +82,46 @@ class Toaster {
         getWindow(dialog);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.custom_toast);
-        initView(dialog);
+        init(dialog);
         progressBar.setMax(100);
         progressBar.setRotation(90);
         ProgressBarAnimation animation = new ProgressBarAnimation(progressBar, 5000);
         animation.setProgressBar(100);
         progressBar.startAnimation(animation);
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = timeProgress; i >= 1; i--) {
-                    if (close == -1) {
-                        break;
-                    }
-                    final int finalI = i;
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (finalI == 1) {
-                                adapter.deleteItem(position);
-                            }
-                            textProgress.setText(String.valueOf(finalI));
-                        }
-                    });
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        User user = adapter.deleteItem(position);
+        Thread thread = new Thread(() -> {
+            for (int i = timeProgress; i >= 1; i--) {
+                int finalI = i;
+                if (close == -1) {
+                    handler.post(() -> adapter.reestablish(user, position));
+                    break;
                 }
-                dialog.dismiss();
+                handler.post(() -> textProgress.setText(String.valueOf(finalI)));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            dialog.dismiss();
         });
         thread.start();
-        Objects.requireNonNull(dialog.getWindow()).setAttributes(getWindowsManager(dialog, Gravity.BOTTOM));
+        Objects.requireNonNull(dialog.getWindow()).setAttributes(getWindowsManager(dialog));
         dialog.show();
     }
 
     /**
      * thanks to this method, we can arrange that where we deem necessary
-     * @param dialog
-     * @param gravity
-     * @return
+     *
+     * @param dialog class
+     * @return WindowManager.LayoutParams
      */
-    private WindowManager.LayoutParams getWindowsManager(Dialog dialog, int gravity) {
+    private WindowManager.LayoutParams getWindowsManager(Dialog dialog) {
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.gravity = gravity;
+        lp.gravity = Gravity.BOTTOM;
         return lp;
     }
 
@@ -137,7 +129,8 @@ class Toaster {
     /**
      * This method added transparent background
      * and allows touch recycler view and other view
-     * @param dialog
+     *
+     * @param dialog lcass
      */
     private void getWindow(Dialog dialog) {
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

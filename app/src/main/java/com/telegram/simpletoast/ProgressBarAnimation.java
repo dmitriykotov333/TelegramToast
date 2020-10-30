@@ -1,7 +1,5 @@
 package com.telegram.simpletoast;
 
-import android.content.Context;
-import android.util.AttributeSet;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ProgressBar;
@@ -17,12 +15,12 @@ public class ProgressBarAnimation extends Animation {
     private boolean forceCounterClockwiseRotation;
 
     /**
-     * Deafault constructor
-     * @param progressBar
+     * Default constructor
+     *
+     * @param progressBar ProgressBar
      * @param animationDuration - time required to change progress
      */
     public ProgressBarAnimation(ProgressBar progressBar, long animationDuration) {
-        super();
         this.progressBar = progressBar;
         this.animationDuration = animationDuration;
         forceClockwiseRotation = false;
@@ -73,7 +71,7 @@ public class ProgressBarAnimation extends Animation {
         float rotation = rotationFrom + (rotationTo - rotationFrom) * interpolatedTime;
 
         if (progressBar != null) {
-            progressBar.setProgress((int)progress);
+            progressBar.setProgress((int) progress);
             progressBar.setRotation(rotation);
         }
     }

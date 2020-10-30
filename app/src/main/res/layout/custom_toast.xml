@@ -1,68 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/toast_layout_root"
+    style="@style/Base.CardView.CardCustom"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <androidx.cardview.widget.CardView
-        android:layout_marginBottom="@dimen/_7sdp"
-        android:id="@+id/toast_layout_root"
-        style="@style/Base.CardView.CardCustom"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#C901060C"
+    app:cardCornerRadius="@dimen/_4sdp"
+    app:cardElevation="0dp">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/_4sdp"
-        app:cardBackgroundColor="#C901060C"
-        app:cardElevation="0dp"
-        >
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <FrameLayout
-                android:id="@+id/progress_frame"
-                android:layout_margin="@dimen/_10sdp"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/progress_frame"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_margin="@dimen/_10sdp">
+
+            <ProgressBar
+                android:id="@+id/progress_circular"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp">
-                <ProgressBar
-                    android:progressDrawable="@drawable/circle_shape"
-                    android:background="@drawable/circle_shape"
-                    android:layoutDirection="rtl"
-                    android:indeterminate="false"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:id="@+id/progress_circular"
-                    android:indeterminateTint="#fff"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"/>
+                android:layout_height="@dimen/_20sdp"
+                android:background="@drawable/circle_shape"
+                android:indeterminate="false"
+                android:indeterminateTint="#fff"
+                android:layoutDirection="rtl"
+                android:progressDrawable="@drawable/circle_shape" />
 
-                <TextView
-                    android:id="@+id/text_progress"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    android:textColor="#fff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </FrameLayout>
             <TextView
-                android:id="@+id/text_title"
-                android:layout_toEndOf="@id/progress_frame"
-                android:layout_centerVertical="true"
-                android:textColor="#fff"
-                android:text="Input text here"
+                android:id="@+id/text_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/text_cancel"
-                android:textSize="@dimen/_12sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:textStyle="bold"
-                android:text="cancel"
-                android:textColor="#448AFF"
-                android:textAllCaps="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+                android:textColor="#fff"
+                android:textStyle="bold" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_toEndOf="@id/progress_frame"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/text_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:text="@string/cancel"
+            android:textAllCaps="true"
+            android:textColor="#448AFF"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

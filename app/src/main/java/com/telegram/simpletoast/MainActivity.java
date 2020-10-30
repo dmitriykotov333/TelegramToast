@@ -3,55 +3,28 @@ package com.telegram.simpletoast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import android.os.Bundle;
-import android.view.View;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import static com.telegram.simpletoast.Utils.getAccounts;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<User> users = new ArrayList<>();
     private RecyclerViewAdapter adapter;
-    private List<User> getAccounts() {
-        users.add(new User("https://uafootball.us/wp-content/uploads/2017/02/AMONRA-STBROWN.jpg", "Amon Brown", "Hello", timeStamped()));
-        users.add(new User("https://upload.wikimedia.org/wikipedia/commons/1/11/Steve_Angello_2015.jpg", "Steve Angello", "Hi ,bro", timeStamped()));
-        users.add(new User("https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Laidback_Luke_2012.jpg/274px-Laidback_Luke_2012.jpg", "Laidback Luke", "Whats up", timeStamped()));
-        users.add(new User("https://djmagasia.com/wp-content/uploads/2019/07/dndkdkdk-636x400.jpg", "Pryda", "No", timeStamped()));
-        users.add(new User("https://pbs.twimg.com/profile_images/600600398383157248/MaYY_AOC_400x400.jpg", "AN21", "Listen my new track", timeStamped()));
-        users.add(new User("https://edmhousenetwork.com/wp-content/uploads/2019/06/zkaaze-1200x675.png", "Kaaze", "thanks bro)", timeStamped()));
-        users.add(new User("https://uafootball.us/wp-content/uploads/2017/02/AMONRA-STBROWN.jpg", "Amon Brown", "Hello", timeStamped()));
-        users.add(new User("https://upload.wikimedia.org/wikipedia/commons/1/11/Steve_Angello_2015.jpg", "Steve Angello", "Hi ,bro", timeStamped()));
-        users.add(new User("https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Laidback_Luke_2012.jpg/274px-Laidback_Luke_2012.jpg", "Laidback Luke", "Whats up", timeStamped()));
-        users.add(new User("https://djmagasia.com/wp-content/uploads/2019/07/dndkdkdk-636x400.jpg", "Pryda", "No", timeStamped()));
-        users.add(new User("https://pbs.twimg.com/profile_images/600600398383157248/MaYY_AOC_400x400.jpg", "AN21", "Listen my new track", timeStamped()));
-        users.add(new User("https://edmhousenetwork.com/wp-content/uploads/2019/06/zkaaze-1200x675.png", "Kaaze", "thanks bro)", timeStamped()));
-        return users;
-    }
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
 
-    private String timeStamped() {
-        Random rnd = new Random();
-        Date date = new Date(Math.abs(System.currentTimeMillis() - rnd.nextLong()));
-        return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(date);
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        ButterKnife.bind(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewAdapter(this, getAccounts(), new ItemClickListener<User>() {
-            @Override
-            public void onItemClickListener(User view, int position) {
-                new Toaster(adapter, MainActivity.this, "Delete chat with " + view.getName(), "Cancel", 5, position)
-                        .run();
-            }
-        });
+        adapter = new RecyclerViewAdapter(this, getAccounts(), (view, position) ->
+                new Toaster(adapter, this, String.format("%s %s", getString(R.string.with), view.getName()), getString(R.string.cancel), 5, position).run()
+        );
         recyclerView.setAdapter(adapter);
     }
 }

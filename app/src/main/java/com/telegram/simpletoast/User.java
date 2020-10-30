@@ -1,5 +1,6 @@
 package com.telegram.simpletoast;
 
+
 public class User {
     private String name;
     private String message;
