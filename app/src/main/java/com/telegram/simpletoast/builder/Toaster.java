@@ -1,4 +1,4 @@
-package com.telegram.simpletoast;
+package com.telegram.simpletoast.builder;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -10,7 +10,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.telegram.simpletoast.ProgressBarAnimation;
+import com.telegram.simpletoast.R;
+import com.telegram.simpletoast.User;
 
 import java.util.Objects;
 
@@ -28,7 +31,7 @@ public class Toaster {
     private String message = "Remove";
     private String buttonText = "Undo";
     private Context context;
-    private int timeProgress;
+    private int timeProgress = 10;
     private int close;
     private int position = 0;
     private Callback<User> callback;
@@ -68,6 +71,10 @@ public class Toaster {
     public Toaster setPosition(int position) {
         this.position = position;
         return this;
+    }
+
+    public ToasterBuilder build() {
+        return new ToasterBuilder(message, buttonText, context, timeProgress, position, callback);
     }
 
     @BindView(R.id.progress_circular)
@@ -136,15 +143,6 @@ public class Toaster {
         return this;
     }
 
-    public void dispose() {
-        message = null;
-        buttonText = null;
-        context = null;
-        timeProgress = 0;
-        close = 0;
-        position = 0;
-        callback = null;
-    }
 
     /**
      * thanks to this method, we can arrange that where we deem necessary

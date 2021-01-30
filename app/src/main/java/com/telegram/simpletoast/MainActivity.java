@@ -9,12 +9,14 @@ import butterknife.ButterKnife;
 import android.os.Bundle;
 import android.view.View;
 
-import java.util.List;
+import com.telegram.simpletoast.builder.Disposable;
+import com.telegram.simpletoast.builder.Toaster;
+import com.telegram.simpletoast.builder.ToasterBuilder;
 
 public class MainActivity extends AppCompatActivity implements ItemClickListener<User> {
 
     private MyAdapter adapter;
-    private Toaster toaster;
+    private Disposable toaster;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -55,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                         adapter.reestablish(user, position);
                     }
                 })
-                .run();
+                .run()
+                .build();
     }
 
     @Override
