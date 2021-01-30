@@ -9,9 +9,8 @@ import java.util.Random;
 
 public class Utils {
 
-    private static List<User> users = new ArrayList<>();
-
     public static List<User> getAccounts() {
+        List<User> users = new ArrayList<>();
         users.add(new User("https://uafootball.us/wp-content/uploads/2017/02/AMONRA-STBROWN.jpg", "Amon Brown", "Hello", timeStamped()));
         users.add(new User("https://upload.wikimedia.org/wikipedia/commons/1/11/Steve_Angello_2015.jpg", "Steve Angello", "Hi ,bro", timeStamped()));
         users.add(new User("https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Laidback_Luke_2012.jpg/274px-Laidback_Luke_2012.jpg", "Laidback Luke", "Whats up", timeStamped()));

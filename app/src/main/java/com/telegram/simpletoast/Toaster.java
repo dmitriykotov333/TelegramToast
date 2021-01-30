@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -17,37 +18,56 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-class Toaster {
+public class Toaster {
     /**
      * @param message used to display text information in toast
      * @param buttonText text button
      * @param position needed to get a position from the list
      * @param timeProgress how much must be active toast, after which the action is performed
      */
-    private String message;
-    private String buttonText;
+    private String message = "Remove";
+    private String buttonText = "Undo";
     private Context context;
-    private int position;
     private int timeProgress;
     private int close;
-    private RecyclerViewAdapter adapter;
+    private int position = 0;
+    private Callback<User> callback;
 
-    /**
-     * Constructor
-     *
-     * @param context      class
-     * @param message      text
-     * @param buttonText   button
-     * @param timeProgress int
-     * @param position     int
-     */
-    public Toaster(RecyclerViewAdapter adapter, Context context, String message, String buttonText, int timeProgress, int position) {
-        this.adapter = adapter;
-        this.context = context;
+    public interface Callback<T> {
+        T delete(int position);
+
+        void dismiss(int position, T user);
+    }
+
+    public Toaster setCallback(Callback<User> callback) {
+        this.callback = callback;
+        return this;
+    }
+
+
+    public Toaster setMessage(String message) {
         this.message = message;
+        return this;
+    }
+
+    public Toaster setButtonText(String buttonText) {
         this.buttonText = buttonText;
+        return this;
+    }
+
+    public Toaster setContext(Context context) {
+        this.context = context;
+        return this;
+    }
+
+    public Toaster setTimeProgress(int timeProgress) {
         this.timeProgress = timeProgress;
+        return this;
+    }
+
+    public Toaster setPosition(int position) {
         this.position = position;
+        return this;
     }
 
     @BindView(R.id.progress_circular)
@@ -70,14 +90,11 @@ class Toaster {
         button.setText(buttonText);
         textTitle.setText(message);
         handler = new Handler();
-        button.setOnClickListener(v -> {
-            close = -1;
-            dialog.dismiss();
-        });
     }
 
-    public void run() {
-        final Dialog dialog = new Dialog(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert_TestDialogTheme);
+
+    public Toaster run() {
+        Dialog dialog = new Dialog(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert_TestDialogTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow(dialog);
         dialog.setCancelable(false);
@@ -88,15 +105,23 @@ class Toaster {
         ProgressBarAnimation animation = new ProgressBarAnimation(progressBar, 5000);
         animation.setProgressBar(100);
         progressBar.startAnimation(animation);
-        User user = adapter.deleteItem(position);
+        User user = callback.delete(position);
+        button.setOnClickListener(v -> {
+            if (callback != null) {
+                callback.dismiss(position, user);
+            }
+            close = -1;
+            dialog.dismiss();
+        });
         Thread thread = new Thread(() -> {
             for (int i = timeProgress; i >= 1; i--) {
                 int finalI = i;
                 if (close == -1) {
-                    handler.post(() -> adapter.reestablish(user, position));
                     break;
                 }
-                handler.post(() -> textProgress.setText(String.valueOf(finalI)));
+                handler.post(() -> {
+                    textProgress.setText(String.valueOf(finalI));
+                });
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -108,6 +133,17 @@ class Toaster {
         thread.start();
         Objects.requireNonNull(dialog.getWindow()).setAttributes(getWindowsManager(dialog));
         dialog.show();
+        return this;
+    }
+
+    public void dispose() {
+        message = null;
+        buttonText = null;
+        context = null;
+        timeProgress = 0;
+        close = 0;
+        position = 0;
+        callback = null;
     }
 
     /**

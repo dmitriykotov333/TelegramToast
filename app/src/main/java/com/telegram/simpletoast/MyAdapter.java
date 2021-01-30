@@ -1,6 +1,5 @@
 package com.telegram.simpletoast;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +11,21 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
-    private List<User> mData;
-    private Context context;
+    private List<User> mData = new ArrayList<>();
     private ItemClickListener<User> onItemClick;
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.name)
@@ -40,13 +42,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            view.setOnClickListener(view1 -> onItemClick.onItemClickListener(mData.get(getAdapterPosition()), getAdapterPosition()));
         }
     }
 
-    public RecyclerViewAdapter(Context context, List<User> mData, ItemClickListener<User> onItemClick) {
-        this.context = context;
+    public void setData(List<User> mData) {
         this.mData = mData;
+    }
+
+    public void setOnItemClick(ItemClickListener<User> onItemClick) {
         this.onItemClick = onItemClick;
     }
 
@@ -54,10 +57,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mData.add(position, user);
         notifyItemChanged(position);
         notifyItemRangeChanged(position, mData.size());
-        Log.i("test", user.getName());
     }
 
-    public User deleteItem(int position) {
+    public User delete(int position) {
         User user = mData.get(position);
         mData.remove(position);
         notifyItemRemoved(position);
@@ -78,10 +80,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.name.setText(users.getName());
         holder.message.setText(users.getMessage());
         holder.time.setText(users.getTime());
-        Glide.with(context)
+        Glide.with(holder.imageView)
                 .load(users.getImage())
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.imageView);
+        holder.linearLayout.setOnClickListener(view1 -> onItemClick.onItemClickListener(position, users));
     }
 
     @Override
